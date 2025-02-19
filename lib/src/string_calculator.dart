@@ -1,22 +1,39 @@
-/// {@template string_calculator}
-/// String calculator with TDD
-/// {@endtemplate}
+/// A calculator that performs addition operations on strings containing numbers
+/// with various delimiter patterns.
+///
+/// This calculator supports:
+/// - Basic comma-separated numbers
+/// - Custom delimiters
+/// - Multiple delimiters of varying lengths
+/// - Number filtering (ignores numbers > 1000)
+/// - Negative number detection
 class StringCalculator {
   /// {@macro string_calculator}
   const StringCalculator();
 
-  /// Adds the numbers in the given string.
+  /// Adds numbers from a string input based on specified delimiters.
   ///
-  /// The string can contain numbers separated by commas. If the string is
-  /// empty, the method returns 0. If the string contains a single number,
-  /// it returns that number. The method also handles newlines as delimiters.
-  /// Additionally, a custom delimiter can be specified at the beginning of
-  /// the string in the format `//<delimiter>\n<numbers>`.
+  /// The input string can be in following formats:
+  /// - Empty string: Returns 0
+  /// - Simple numbers: "1,2,3" returns 6
+  /// - Custom delimiter: "//;\n1;2;3" returns 6
+  /// - Multiple delimiters: "//[*][%]\n1*2%3" returns 6
+  /// - Variable length delimiters: "//[***]\n1***2***3" returns 6
   ///
-  /// @param numbers The string containing numbers separated by commas,
-  /// newlines, or a custom delimiter.
-  /// @return The sum of the numbers in the string.
-  /// @throws ArgumentError if the string contains negative numbers.
+  /// Numbers greater than 1000 are ignored in the sum.
+  ///
+  /// Throws [ArgumentError] if negative numbers are found.
+  ///
+  /// Example:
+  /// ```dart
+  /// final calculator = StringCalculator();
+  /// print(calculator.add("1,2,3")); // Outputs: 6
+  /// print(calculator.add("//[*][%]\n1*2%3")); // Outputs: 6
+  /// ```
+  ///
+  /// @param numbers The input string containing numbers and delimiters
+  /// @return The sum of all valid numbers in the string
+  /// @throws ArgumentError if negative numbers are present
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
@@ -32,6 +49,24 @@ class StringCalculator {
     return _sumNumbers(numbersToProcess, delimiters);
   }
 
+  /// Parses the input string to extract delimiters and numbers.
+  ///
+  /// Handles multiple formats of delimiter specifications:
+  /// - Single delimiter: "//;\n1;2;3"
+  /// - Multiple delimiters: "//[*][%]\n1*2%3"
+  /// - Variable length delimiters: "//[***]\n1***2***3"
+  ///
+  /// The delimiter section must start with "//" and end with "\n".
+  ///
+  /// Example:
+  /// ```dart
+  /// var result = _parseDelimitersAndNumbers("//[*][%]\n1*2%3");
+  /// print(result.delimiters); // Outputs: [*, %]
+  /// print(result.numbers); // Outputs: 1*2%3
+  /// ```
+  ///
+  /// @param input The full input string including delimiter specification
+  /// @return A [DelimiterParseResult] containing extracted delimiters and numbers
   DelimiterParseResult _parseDelimitersAndNumbers(String input) {
     final firstNewLine = input.indexOf('\n');
     final delimiterSection = input.substring(2, firstNewLine);
@@ -54,6 +89,25 @@ class StringCalculator {
     return DelimiterParseResult(delimiters, numbers);
   }
 
+  /// Processes the numbers string with given delimiters and calculates the sum.
+  ///
+  /// This method:
+  /// 1. Replaces all delimiters with a common delimiter (comma)
+  /// 2. Splits the string into numbers
+  /// 3. Filters out numbers greater than 1000
+  /// 4. Checks for negative numbers
+  /// 5. Calculates the sum
+  ///
+  /// Example:
+  /// ```dart
+  /// var sum = _sumNumbers("1*2%3", ['*', '%']);
+  /// print(sum); // Outputs: 6
+  /// ```
+  ///
+  /// @param numbersStr The string containing numbers
+  /// @param delimiters List of delimiters to process
+  /// @return The sum of all valid numbers
+  /// @throws ArgumentError if negative numbers are found
   int _sumNumbers(String numbersStr, List<String> delimiters) {
     var processedNumbers = numbersStr;
 
@@ -70,23 +124,28 @@ class StringCalculator {
     final negativeNumbers = parsedNumbers.where((n) => n < 0).toList();
     if (negativeNumbers.isNotEmpty) {
       throw ArgumentError(
-          'negative numbers not allowed: ${negativeNumbers.join(", ")}');
+        'negative numbers not allowed: ${negativeNumbers.join(", ")}',
+      );
     }
 
     return parsedNumbers.reduce((a, b) => a + b);
   }
 }
 
-/// {@template DelimiterParseResult}
-/// hold the result of parsing delimiters and numbers from a string.
-/// {@endtemplate}
+/// A container class for storing parsed delimiter information and numbers.
+///
+/// This class holds the results of parsing a string calculator input,
+/// separating the delimiters from the actual numbers to be processed.
 class DelimiterParseResult {
-  /// {@macro DelimiterParseResult}
-  DelimiterParseResult(this.delimiters, this.numbers);
-
-  /// The list of delimiters extracted from the input string.
+  /// List of extracted delimiters
   final List<String> delimiters;
 
-  /// The numbers part of the input string after removing the delimiter section.
+  /// The remaining string containing only numbers and delimiters
   final String numbers;
+
+  /// Creates a new [DelimiterParseResult] instance.
+  ///
+  /// @param delimiters List of extracted delimiters
+  /// @param numbers The remaining string containing numbers
+  DelimiterParseResult(this.delimiters, this.numbers);
 }
