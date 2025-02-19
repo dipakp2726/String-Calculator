@@ -25,5 +25,9 @@ void main() {
       expect(calculator.add('2,3'), equals(5));
     });
 
+    test('should handle multiple numbers', () {
+      expect(calculator.add('1,2,3,4,5'), equals(15));
+      expect(calculator.add('10,20,30'), equals(60));
+    });
   });
 }
