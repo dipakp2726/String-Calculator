@@ -9,16 +9,30 @@ class StringCalculator {
   ///
   /// The string can contain numbers separated by commas.If the string is empty,
   /// the method returns 0. If the string contains a single number,
-  /// it returns that number. The method also handles newlines as delimiters.
+  /// it returns that number.
+  /// The method also handles newlines as delimiters.
+  /// Additionally, a custom delimiter
+  /// can be specified at the beginning of the string in the format `//<delimiter>\n<numbers>`.
   ///
-  /// @param numbers The string containing numbers separated by commas.
+  /// @param numbers The string containing numbers separated by commas,
+  /// newlines, or a custom delimiter.
   /// @return The sum of the numbers in the string.
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
-    return numbers
-        .replaceAll('\n', ',')
-        .split(',')
-        .map(int.parse)
+
+    var delimiter = ',';
+    var numbersToProcess = numbers;
+
+    if (numbers.startsWith('//')) {
+      final parts = numbers.split('\n');
+      delimiter = parts[0].substring(2);
+      numbersToProcess = parts[1];
+    }
+
+    return numbersToProcess
+        .replaceAll('\n', delimiter)
+        .split(delimiter)
+        .map((str) => int.parse(str.trim()))
         .reduce((a, b) => a + b);
   }
 }
