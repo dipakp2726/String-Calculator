@@ -16,17 +16,24 @@ class StringCalculator {
   /// @param numbers The string containing numbers separated by commas,
   /// newlines, or a custom delimiter.
   /// @return The sum of the numbers in the string.
-  /// @throws ArgumentError if the string contains negative numbers.
+  /// @throws ArgumentError if the string contains negative numbers.class StringCalculator {
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
-    var delimiter = ',';
     var numbersToProcess = numbers;
+    var delimiter = ',';
 
     if (numbers.startsWith('//')) {
-      final parts = numbers.split('\n');
-      delimiter = parts[0].substring(2);
-      numbersToProcess = parts[1];
+      final firstNewLine = numbers.indexOf('\n');
+      final delimiterSection = numbers.substring(2, firstNewLine);
+
+      if (delimiterSection.startsWith('[') && delimiterSection.endsWith(']')) {
+        delimiter = delimiterSection.substring(1, delimiterSection.length - 1);
+      } else {
+        delimiter = delimiterSection;
+      }
+
+      numbersToProcess = numbers.substring(firstNewLine + 1);
     }
 
     final parsedNumbers = numbersToProcess
@@ -39,8 +46,7 @@ class StringCalculator {
     final negativeNumbers = parsedNumbers.where((n) => n < 0).toList();
     if (negativeNumbers.isNotEmpty) {
       throw ArgumentError(
-        'negative numbers not allowed: ${negativeNumbers.join(", ")}',
-      );
+          'negative numbers not allowed: ${negativeNumbers.join(", ")}');
     }
 
     return parsedNumbers.reduce((a, b) => a + b);
