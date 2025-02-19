@@ -5,8 +5,12 @@ class StringCalculator {
   /// {@macro string_calculator}
   const StringCalculator();
 
-/// returns 0 for empty string
+  /// Adds the numbers in the given string.
+  ///
+  /// @param numbers The string containing numbers separated by commas.
+  /// @return The sum of the numbers in the string.
   int add(String numbers) {
-    return 0;
+    if (numbers.isEmpty) return 0;
+    return int.parse(numbers);
   }
 }
