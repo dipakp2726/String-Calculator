@@ -9,20 +9,16 @@ class StringCalculator {
   ///
   /// The string can contain numbers separated by commas.If the string is empty,
   /// the method returns 0. If the string contains a single number,
-  /// it returns that number.
+  /// it returns that number. The method also handles newlines as delimiters.
   ///
   /// @param numbers The string containing numbers separated by commas.
   /// @return The sum of the numbers in the string.
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
-
     return numbers
+        .replaceAll('\n', ',')
         .split(',')
-        .map(
-          int.parse,
-        )
-        .reduce(
-          (a, b) => a + b,
-        );
+        .map(int.parse)
+        .reduce((a, b) => a + b);
   }
 }
