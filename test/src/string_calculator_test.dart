@@ -65,5 +65,11 @@ void main() {
         ),
       );
     });
+
+    test('should ignore numbers greater than 1000', () {
+      expect(calculator.add('2,1001'), equals(2));
+      expect(calculator.add('1000,2'), equals(1002)); // 1000 is still valid
+      expect(calculator.add('1001,2,3,1002,4'), equals(9)); // only sum 2,3,4
+    });
   });
 }
