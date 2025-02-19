@@ -17,7 +17,7 @@ class StringCalculator {
   /// - Empty string: Returns 0
   /// - Simple numbers: "1,2,3" returns 6
   /// - Custom delimiter: "//;\n1;2;3" returns 6
-  /// - Multiple delimiters: "//[*][%]\n1*2%3" returns 6
+  /// - Multiple delimiters: "//[*][\%]\n1*2%3" returns 6
   /// - Variable length delimiters: "//[***]\n1***2***3" returns 6
   ///
   /// Numbers greater than 1000 are ignored in the sum.
@@ -53,7 +53,7 @@ class StringCalculator {
   ///
   /// Handles multiple formats of delimiter specifications:
   /// - Single delimiter: "//;\n1;2;3"
-  /// - Multiple delimiters: "//[*][%]\n1*2%3"
+  /// - Multiple delimiters: "//[*][\%]\n1*2%3"
   /// - Variable length delimiters: "//[***]\n1***2***3"
   ///
   /// The delimiter section must start with "//" and end with "\n".
@@ -66,7 +66,8 @@ class StringCalculator {
   /// ```
   ///
   /// @param input The full input string including delimiter specification
-  /// @return A [DelimiterParseResult] containing extracted delimiters and numbers
+  /// @return A [DelimiterParseResult] containing extracted delimiters
+  /// and numbers
   DelimiterParseResult _parseDelimitersAndNumbers(String input) {
     final firstNewLine = input.indexOf('\n');
     final delimiterSection = input.substring(2, firstNewLine);
@@ -137,15 +138,15 @@ class StringCalculator {
 /// This class holds the results of parsing a string calculator input,
 /// separating the delimiters from the actual numbers to be processed.
 class DelimiterParseResult {
-  /// List of extracted delimiters
-  final List<String> delimiters;
-
-  /// The remaining string containing only numbers and delimiters
-  final String numbers;
-
   /// Creates a new [DelimiterParseResult] instance.
   ///
   /// @param delimiters List of extracted delimiters
   /// @param numbers The remaining string containing numbers
   DelimiterParseResult(this.delimiters, this.numbers);
+
+  /// List of extracted delimiters
+  final List<String> delimiters;
+
+  /// The remaining string containing only numbers and delimiters
+  final String numbers;
 }
