@@ -33,6 +33,7 @@ class StringCalculator {
         .replaceAll('\n', delimiter)
         .split(delimiter)
         .map((str) => int.parse(str.trim()))
+        .where((number) => number <= 1000)
         .toList();
 
     final negativeNumbers = parsedNumbers.where((n) => n < 0).toList();
