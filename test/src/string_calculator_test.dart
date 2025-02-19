@@ -71,5 +71,11 @@ void main() {
       expect(calculator.add('1000,2'), equals(1002)); // 1000 is still valid
       expect(calculator.add('1001,2,3,1002,4'), equals(9)); // only sum 2,3,4
     });
+
+    test('should handle delimiters of any length', () {
+      expect(calculator.add('//[***]\n1***2***3'), equals(6));
+      expect(calculator.add('//[####]\n1####2####3'), equals(6));
+      expect(calculator.add('//[&&&&]\n1&&&&2&&&&3'), equals(6));
+    });
   });
 }
