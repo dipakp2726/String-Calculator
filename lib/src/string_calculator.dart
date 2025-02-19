@@ -16,29 +16,53 @@ class StringCalculator {
   /// @param numbers The string containing numbers separated by commas,
   /// newlines, or a custom delimiter.
   /// @return The sum of the numbers in the string.
-  /// @throws ArgumentError if the string contains negative numbers.class StringCalculator {
+  /// @throws ArgumentError if the string contains negative numbers.
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
     var numbersToProcess = numbers;
-    var delimiter = ',';
+    var delimiters = <String>[','];
 
     if (numbers.startsWith('//')) {
-      final firstNewLine = numbers.indexOf('\n');
-      final delimiterSection = numbers.substring(2, firstNewLine);
-
-      if (delimiterSection.startsWith('[') && delimiterSection.endsWith(']')) {
-        delimiter = delimiterSection.substring(1, delimiterSection.length - 1);
-      } else {
-        delimiter = delimiterSection;
-      }
-
-      numbersToProcess = numbers.substring(firstNewLine + 1);
+      final parseResult = _parseDelimitersAndNumbers(numbers);
+      delimiters = parseResult.delimiters;
+      numbersToProcess = parseResult.numbers;
     }
 
-    final parsedNumbers = numbersToProcess
-        .replaceAll('\n', delimiter)
-        .split(delimiter)
+    return _sumNumbers(numbersToProcess, delimiters);
+  }
+
+  DelimiterParseResult _parseDelimitersAndNumbers(String input) {
+    final firstNewLine = input.indexOf('\n');
+    final delimiterSection = input.substring(2, firstNewLine);
+    final numbers = input.substring(firstNewLine + 1);
+    final delimiters = <String>[];
+
+    if (delimiterSection.contains('[')) {
+      final pattern = RegExp(r'\[(.*?)\]');
+      final matches = pattern.allMatches(delimiterSection);
+
+      for (final match in matches) {
+        if (match.group(1) != null) {
+          delimiters.add(match.group(1)!);
+        }
+      }
+    } else {
+      delimiters.add(delimiterSection);
+    }
+
+    return DelimiterParseResult(delimiters, numbers);
+  }
+
+  int _sumNumbers(String numbersStr, List<String> delimiters) {
+    var processedNumbers = numbersStr;
+
+    for (final delimiter in delimiters) {
+      processedNumbers = processedNumbers.replaceAll(delimiter, ',');
+    }
+
+    final parsedNumbers = processedNumbers
+        .split(',')
         .map((str) => int.parse(str.trim()))
         .where((number) => number <= 1000)
         .toList();
@@ -51,4 +75,18 @@ class StringCalculator {
 
     return parsedNumbers.reduce((a, b) => a + b);
   }
+}
+
+/// {@template DelimiterParseResult}
+/// hold the result of parsing delimiters and numbers from a string.
+/// {@endtemplate}
+class DelimiterParseResult {
+  /// {@macro DelimiterParseResult}
+  DelimiterParseResult(this.delimiters, this.numbers);
+
+  /// The list of delimiters extracted from the input string.
+  final List<String> delimiters;
+
+  /// The numbers part of the input string after removing the delimiter section.
+  final String numbers;
 }
