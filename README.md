@@ -10,18 +10,18 @@ The String Calculator is a Dart library that provides functionality for parsing 
 The String Calculator supports the following features:
 ### Basic Operations
 
-Empty string handling (returns 0)
-Single number processing
-Multiple number addition
-Negative number detection and error reporting
+- Empty string handling (returns 0)
+- Single number processing
+- Multiple number addition
+- Negative number detection and error reporting
 
 ### Advanced Features
 
-Numbers greater than 1000 are ignored in calculations
-Custom delimiter support using the format "//[delimiter]\n"
-Multiple delimiter support using the format "//[delim1][delim2]\n"
-Variable-length delimiter support
-Newline character as an alternative delimiter
+- Numbers greater than 1000 are ignored in calculations
+- Custom delimiter support using the format "//[delimiter]\n"
+- Multiple delimiter support using the format "//[delim1][delim2]\n"
+- Variable-length delimiter support
+- Newline character as an alternative delimiter
 
 
 ## Installation 💻
