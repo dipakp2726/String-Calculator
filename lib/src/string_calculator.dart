@@ -110,6 +110,7 @@ class StringCalculator {
   /// @return The sum of all valid numbers
   /// @throws ArgumentError if negative numbers are found
   int _sumNumbers(String numbersStr, List<String> delimiters) {
+    delimiters.add('\n');
     var processedNumbers = numbersStr;
 
     for (final delimiter in delimiters) {
