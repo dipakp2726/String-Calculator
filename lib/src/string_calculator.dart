@@ -7,16 +7,16 @@ class StringCalculator {
 
   /// Adds the numbers in the given string.
   ///
-  /// The string can contain numbers separated by commas.If the string is empty,
-  /// the method returns 0. If the string contains a single number,
-  /// it returns that number.
-  /// The method also handles newlines as delimiters.
-  /// Additionally, a custom delimiter
-  /// can be specified at the beginning of the string in the format `//<delimiter>\n<numbers>`.
+  /// The string can contain numbers separated by commas. If the string is
+  /// empty, the method returns 0. If the string contains a single number,
+  /// it returns that number. The method also handles newlines as delimiters.
+  /// Additionally, a custom delimiter can be specified at the beginning of
+  /// the string in the format `//<delimiter>\n<numbers>`.
   ///
   /// @param numbers The string containing numbers separated by commas,
   /// newlines, or a custom delimiter.
   /// @return The sum of the numbers in the string.
+  /// @throws ArgumentError if the string contains negative numbers.
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
@@ -29,10 +29,19 @@ class StringCalculator {
       numbersToProcess = parts[1];
     }
 
-    return numbersToProcess
+    final parsedNumbers = numbersToProcess
         .replaceAll('\n', delimiter)
         .split(delimiter)
         .map((str) => int.parse(str.trim()))
-        .reduce((a, b) => a + b);
+        .toList();
+
+    final negativeNumbers = parsedNumbers.where((n) => n < 0).toList();
+    if (negativeNumbers.isNotEmpty) {
+      throw ArgumentError(
+        'negative numbers not allowed: ${negativeNumbers.join(", ")}',
+      );
+    }
+
+    return parsedNumbers.reduce((a, b) => a + b);
   }
 }
