@@ -52,5 +52,18 @@ void main() {
         ),
       );
     });
+
+    test('should show all negative numbers in exception message', () {
+      expect(
+        () => calculator.add('-1,-2,3,-4'),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.message == 'negative numbers not allowed: -1, -2, -4',
+          ),
+        ),
+      );
+    });
   });
 }
