@@ -77,5 +77,10 @@ void main() {
       expect(calculator.add('//[####]\n1####2####3'), equals(6));
       expect(calculator.add('//[&&&&]\n1&&&&2&&&&3'), equals(6));
     });
+
+    test('should handle multiple delimiters', () {
+      expect(calculator.add('//[*][%]\n1*2%3'), equals(6));
+      expect(calculator.add('//[*][#]\n1*2#3'), equals(6));
+    });
   });
 }
